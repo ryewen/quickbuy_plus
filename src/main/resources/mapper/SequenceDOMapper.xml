@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.loststars.quickbuy.dao.SequenceDOMapper">
+  <resultMap id="BaseResultMap" type="com.loststars.quickbuy.dataobject.SequenceDO">
+    <id column="name" jdbcType="VARCHAR" property="name" />
+    <result column="current_value" jdbcType="INTEGER" property="currentValue" />
+    <result column="step" jdbcType="INTEGER" property="step" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    name, current_value, step
+  </sql>
+  <select id="selectByExample" parameterType="com.loststars.quickbuy.dataobject.SequenceDOExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from sequence_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sequence_info
+    where name = #{name,jdbcType=VARCHAR} for update
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from sequence_info
+    where name = #{name,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.loststars.quickbuy.dataobject.SequenceDO">
+    insert into sequence_info (name, current_value, step
+      )
+    values (#{name,jdbcType=VARCHAR}, #{currentValue,jdbcType=INTEGER}, #{step,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.loststars.quickbuy.dataobject.SequenceDO">
+    insert into sequence_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        name,
+      </if>
+      <if test="currentValue != null">
+        current_value,
+      </if>
+      <if test="step != null">
+        step,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="currentValue != null">
+        #{currentValue,jdbcType=INTEGER},
+      </if>
+      <if test="step != null">
+        #{step,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.loststars.quickbuy.dataobject.SequenceDO">
+    update sequence_info
+    <set>
+      <if test="currentValue != null">
+        current_value = #{currentValue,jdbcType=INTEGER},
+      </if>
+      <if test="step != null">
+        step = #{step,jdbcType=INTEGER},
+      </if>
+    </set>
+    where name = #{name,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.loststars.quickbuy.dataobject.SequenceDO">
+    update sequence_info
+    set current_value = #{currentValue,jdbcType=INTEGER},
+      step = #{step,jdbcType=INTEGER}
+    where name = #{name,jdbcType=VARCHAR}
+  </update>
+</mapper>
